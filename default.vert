@@ -9,9 +9,15 @@ uniform float scale;
 out vec3 color;
 out vec2 texCoord;
 
+// Inputs the matrices needed for 3D viewing with perspective
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main()
 {
-   gl_Position = vec4(aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
+   // Outputs the positions/coordinates of all vertices
+   gl_Position = proj * view * model * vec4(aPos, 1.0);
    color = aColor;
    texCoord = aTex;
 }
