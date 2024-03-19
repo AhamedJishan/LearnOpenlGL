@@ -38,6 +38,19 @@ GLuint indices[] =
 const unsigned int width = 800;
 const unsigned int height = 800;
 
+void ProcessInputs(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 int main(void)
 {
     GLFWwindow* window;
@@ -59,6 +72,7 @@ int main(void)
 
     //Load GLAD
     gladLoadGL();
+
     //Specify the viewport of OpenGL in the window
     glViewport(0, 0, width, height);
 
@@ -92,6 +106,8 @@ int main(void)
     // Enables the Depth Buffer
     glEnable(GL_DEPTH_TEST);
 
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
     /* Main Loop */
     while (!glfwWindowShouldClose(window))
     {
@@ -103,7 +119,7 @@ int main(void)
         double crntTime = glfwGetTime();
         if (crntTime - prevTime >= 1 / 60)
         {
-            rotation += 0.1f;
+            rotation += 0.05f;
             prevTime = crntTime;
         }
 
@@ -129,8 +145,11 @@ int main(void)
         glUniform1f(uniformID, 1.5f);
         texture.Bind();
         VAO1.Bind();
+
         glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
 
+        // Process Inputs
+        ProcessInputs(window);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

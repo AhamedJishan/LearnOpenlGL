@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="IBO.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -161,6 +162,7 @@
     <None Include="default.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="IBO.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="Texture.h" />
