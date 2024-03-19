@@ -10,6 +10,7 @@
 #include "IBO.h"
 #include "VAO.h"
 #include "Texture.h"
+#include "Camera.h"
 
 #include <cmath>
 
@@ -92,21 +93,17 @@ int main(void)
     VBO1.Unbind();
     IBO1.Unbind();
 
-    GLuint uniformID = glGetUniformLocation(shaderProgram.ID, "scale");
-
     stbi_set_flip_vertically_on_load(true);
 
     Texture texture("brick.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
     texture.TexUnit(shaderProgram, "tex0", 0);
 
-    // Variables that help the rotation of the pyramid
-    float rotation = 0.0f;
-    double prevTime = glfwGetTime();
-
     // Enables the Depth Buffer
     glEnable(GL_DEPTH_TEST);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     /* Main Loop */
     while (!glfwWindowShouldClose(window))
@@ -115,34 +112,11 @@ int main(void)
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Simple timer
-        double crntTime = glfwGetTime();
-        if (crntTime - prevTime >= 1 / 60)
-        {
-            rotation += 0.05f;
-            prevTime = crntTime;
-        }
-
-        // Initializes matrices so they are not the null matrix
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 proj = glm::mat4(1.0f);
-
-        // Assigns different transformations to each matrix
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        proj = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
-
-        // Outputs the matrices into the Vertex Shader
-        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
         shaderProgram.Activate();
-        glUniform1f(uniformID, 1.5f);
+
+        camera.Inputs(window);
+        camera.Matrix(45.0f, 0.01f, 100.0f, shaderProgram, "camMatrix");
+
         texture.Bind();
         VAO1.Bind();
 
