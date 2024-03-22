@@ -1,2 +1,2 @@
 # LearnOpenlGL
-A follow up to Vicotr Gordon's OpenGL Tutorials series.
+A follow up to Victor Gordon's OpenGL Tutorials series.
